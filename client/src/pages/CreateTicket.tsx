@@ -111,7 +111,7 @@ const CreateTicket = () => {
             )
           }
           </select>
-          <button type='submit' onSubmit={handleSubmit}>Submit Form</button>
+          <button type='submit' onSubmit={handleSubmit}>Save</button>
         </form>
       </div>
     </>

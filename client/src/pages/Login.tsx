@@ -9,8 +9,11 @@ const Login = () => {
     password: ''
   });
 
+  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    setSubmissionStatus("");
     setLoginData({
       ...loginData,
       [name]: value
@@ -20,10 +23,13 @@ const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
+      // call the login API endpoint with loginData
       const data = await login(loginData);
+      // If login is successful, call Auth.login to store the token in localStorage
       Auth.login(data.token);
     } catch (err) {
       console.error('Failed to login', err);
+      setSubmissionStatus("error");
     }
   };
 
@@ -45,7 +51,10 @@ const Login = () => {
           value={loginData.password || ''}
           onChange={handleChange}
         />
-        <button type='submit'>Submit Form</button>
+        <button type='submit'>Login</button>
+        {(submissionStatus === "error" && (
+          <div className="text-error">Invalid credentials</div>)
+        )}
       </form>
     </div>
     
