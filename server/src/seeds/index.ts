@@ -4,7 +4,7 @@ import { sequelize } from '../models/index.js';
 
 const seedAll = async (): Promise<void> => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });
     console.log('\n----- DATABASE SYNCED -----\n');
     
     await seedUsers();
