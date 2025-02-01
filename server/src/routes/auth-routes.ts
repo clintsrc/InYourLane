@@ -14,22 +14,34 @@ import bcrypt from 'bcrypt';  // for password hashing
  * 
  */
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;  // Extract username and password from request body
+  const { username, password } = req.body;
 
-  // Find the user in the database by username to retrieve their encrypted stored password
-  const user = await User.findOne({
-    where: { username },
-  });
+  /* Find the user in the database by username to retrieve their encrypted 
+     stored password */
+  let user;
+  
+  try {
+    user = await User.findOne({
+      where: { username },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
 
-  // User is not found, send response 'auth failed' status 401
   if (!user) {
     return res.status(401).json({ message: 'Authentication failed' });
   }
 
-  // Use bcrypt to compare the password stored in the incoming request object to the hashed password stored in the databse
-  const passwordIsValid = await bcrypt.compare(password, user.password);
+  /* Use bcrypt to compare the password stored in the incoming request object 
+     to the hashed password stored in the database */
+  let passwordIsValid;
 
-  // Password is invalid, send response 'auth failed' status 401
+  try {
+    passwordIsValid = await bcrypt.compare(password, user.password);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
   if (!passwordIsValid) {
     return res.status(401).json({ message: 'Authentication failed' });
   }
@@ -38,6 +50,8 @@ export const login = async (req: Request, res: Response) => {
   const secretKey = process.env.JWT_SECRET_KEY || '';
 
   // Generate a temporary JWT token for the authenticated, valid for 1 hour
+  // TODO: test with a lower timer, switch it back afterward
+  // TODO: when expired, I am redirected to the login page upon my next action
   const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
   // Send the token back to the client in as a JSON response

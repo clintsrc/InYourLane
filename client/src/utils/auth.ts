@@ -1,4 +1,3 @@
-// Importing specific types and functions from the 'jwt-decode' library.
 // JwtPayload: A type definition representing the structure of a JSON Web Token payload.
 // jwtDecode: A function used to decode a JSON Web Token (JWT) and extract its payload.
 import { JwtPayload, jwtDecode } from 'jwt-decode';
@@ -6,24 +5,29 @@ import type { UserData } from '../interfaces/UserData';
 
 class AuthService {
 
-  // return the decoded token
+  // return the decoded JWT token or null if not determined
   getProfile(): UserData | null {
     const token = this.getToken();
+
     if (token) {
       try {
         const decodedToken = jwtDecode<UserData>(token);
 
         return decodedToken;
       } catch (error) {
-        console.error('Error decoding the token:', error);
+        console.error("Error decoding the token:", error);
       }
     }
     return null;
   }
 
-  // Check if the user is logged in 
-  // The user is only logged in if we can successfully retrieve the token from 
-  // localStorage and the token's exp claim (expiration date) has not expired
+  /*
+   * Check if the user is logged in 
+   *
+   * The user is only logged in if we can successfully retrieve the token from 
+   * localStorage and the token's exp claim (expiration date) has not expired
+   * 
+   */
   loggedIn(): boolean {
     const token = this.getToken();  // read from localStorage
 
@@ -40,28 +44,48 @@ class AuthService {
     return false;
   }
 
-  // Return true if the token is expired, false otherwise
+  /*
+   * Check the decoded token's exp claim
+   * 
+   * Return true if the token is expired, false otherwise
+   * 
+   */
   isTokenExpired(token: string): boolean {
     try {
-      // Attempt to decode the provided token using jwtDecode, expecting a JwtPayload type.
+      // Try to decode the token with jwtDecode
       const decoded = jwtDecode<JwtPayload>(token);
 
-      // Check if the decoded token has an 'exp' (expiration) property and if it is less than the current time in seconds.
+      /* Check if the decoded token has an 'exp' (expiration) property. 
+         If it's less than the current time in seconds then it's still valid */
+      // convert current time from ms to seconds
       if (decoded?.exp && decoded?.exp < Date.now() / 1000) {
-        // If the token is expired, return true indicating that it is expired.
-        return true;
+        return true;  // expired
       }
-    } catch (err) {
-      // If decoding fails (e.g., due to an invalid token format), catch the error and return false.
-      return false;
+    } catch (error) {
+      /* If decoding fails, log the error and handle the error as an expired 
+         access for security purposes */
+      console.error("Failed to determine if the login access is current: ", error);
+
+      return true;
     }
+
     // If the token is not expired, return false.
     return false;
   }
 
-  // Retrieve the encoded JWT token from localStorage
+  /* 
+    * Retrieve the encoded JWT token from localStorage or an empty string if it's 
+    * not found.
+    * 
+    */
   getToken(): string {
-    const loggedUser = localStorage.getItem('id_token') || '';
+    let loggedUser = '';
+
+    try {
+      loggedUser = localStorage.getItem('id_token') || '';
+    } catch (error) {
+      console.error("Error reading access token:", error);
+    }
 
     return loggedUser;
   }
@@ -69,19 +93,27 @@ class AuthService {
   // Store the JWT token in localStorage then redirect to the home page
   login(idToken: string) {
     // set the token to localStorage
-    localStorage.setItem('id_token', idToken);
+    try {
+      localStorage.setItem('id_token', idToken);
+    } catch (error) {
+      console.error("Error storing access token:", error);
+    }
 
     // redirect to the home page
     window.location.assign('/');
   }
 
-  // Remove the JWT token from localStorage then redirect to the home page
+  // Remove the JWT token from localStorage then redirect to the login page
   logout() {
     // remove the token from localStorage
-    localStorage.removeItem('id_token');
+    try {
+      localStorage.removeItem('id_token');
+    } catch (error) {
+      console.error('Error removing access token from local storage:', error);
+    }
 
     // redirect to the login page
-    window.location.assign('/');
+    window.location.assign('/login');
   }
 }
 
