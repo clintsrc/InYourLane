@@ -1,20 +1,17 @@
+// Importing specific types and functions from the 'jwt-decode' library.
+// JwtPayload: A type definition representing the structure of a JSON Web Token payload.
+// jwtDecode: A function used to decode a JSON Web Token (JWT) and extract its payload.
 import { JwtPayload, jwtDecode } from 'jwt-decode';
-
-// Ensure the shape of decoded the auth token for type safety
-interface DecodedToken extends JwtPayload {
-  username: string;
-  iat: number; // Issued At Time (Unix format, e.g. 1738261964)
-  exp: number; // Expiration (Unix format, e.g. 1738265564)
-}
+import type { UserData } from '../interfaces/UserData';
 
 class AuthService {
 
   // return the decoded token
-  getProfile(): DecodedToken | null {
+  getProfile(): UserData | null {
     const token = this.getToken();
     if (token) {
       try {
-        const decodedToken = jwtDecode<DecodedToken>(token);
+        const decodedToken = jwtDecode<UserData>(token);
 
         return decodedToken;
       } catch (error) {
@@ -36,7 +33,7 @@ class AuthService {
 
       if (decodedToken) {
         // return true only if the token has not expired, false otherwise
-        return !this.isTokenExpired(decodedToken);
+        return !this.isTokenExpired(token);
       }
     }
 
@@ -44,26 +41,28 @@ class AuthService {
   }
 
   // Return true if the token is expired, false otherwise
-  isTokenExpired(decodedToken: DecodedToken): boolean {
-    // Convert the payload's 'exp' timestamp value from seconds to milliseconds
-    const expDate = decodedToken.exp * 1000;
-    // Get current time in milliseconds
-    const currentDate = new Date().getTime();
+  isTokenExpired(token: string): boolean {
+    try {
+      // Attempt to decode the provided token using jwtDecode, expecting a JwtPayload type.
+      const decoded = jwtDecode<JwtPayload>(token);
 
-    // Check if the token is expired by comparing the expiration time with the current time
-    if (expDate < currentDate) {
-      console.log(`Login session expired.`);
-
-      return true;
+      // Check if the decoded token has an 'exp' (expiration) property and if it is less than the current time in seconds.
+      if (decoded?.exp && decoded?.exp < Date.now() / 1000) {
+        // If the token is expired, return true indicating that it is expired.
+        return true;
+      }
+    } catch (err) {
+      // If decoding fails (e.g., due to an invalid token format), catch the error and return false.
+      return false;
     }
-
+    // If the token is not expired, return false.
     return false;
   }
 
   // Retrieve the encoded JWT token from localStorage
   getToken(): string {
     const loggedUser = localStorage.getItem('id_token') || '';
-    
+
     return loggedUser;
   }
 
