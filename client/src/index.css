@@ -178,6 +178,11 @@ tbody tr:nth-child(odd) {
   max-width: 100%;  /* don't overflow */
 }
 
+.filter-label {
+  color: var(--light-color);
+  padding: 1rem;
+}
+
 /* Login dialog */
 .container {
   /* margin: auto; */
