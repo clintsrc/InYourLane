@@ -50,8 +50,6 @@ export const login = async (req: Request, res: Response) => {
   const secretKey = process.env.JWT_SECRET_KEY || '';
 
   // Generate a temporary JWT token for the authenticated, valid for 1 hour
-  // TODO: test with a lower timer, switch it back afterward
-  // TODO: when expired, I am redirected to the login page upon my next action
   const token = jwt.sign({ username }, secretKey, { expiresIn: '1h' });
 
   // Send the token back to the client in as a JSON response

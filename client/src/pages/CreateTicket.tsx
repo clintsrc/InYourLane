@@ -1,9 +1,11 @@
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, useLayoutEffect, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTicket } from '../api/ticketAPI';
 import { TicketData } from '../interfaces/TicketData';
 import { UserData } from '../interfaces/UserData';
 import { retrieveUsers } from '../api/userAPI';
+
+import auth from "../utils/auth";
 
 const CreateTicket = () => {
   const [newTicket, setNewTicket] = useState<TicketData | undefined>(
@@ -16,6 +18,8 @@ const CreateTicket = () => {
       assignedUser: null
     }
   );
+
+  const [loginCheck, setLoginCheck] = useState(false);
 
   const navigate = useNavigate();
 
@@ -30,9 +34,19 @@ const CreateTicket = () => {
     }
   };
 
-  useEffect(() => {
-    getAllUsers();
-  }, []);
+    useLayoutEffect(() => {
+      if (!auth.loggedIn()) {
+        navigate("/login"); // Redirect to login page if not logged in
+      } else {
+        setLoginCheck(true);
+      }
+    }, [navigate]); // run whenever navigate changes.
+
+    useEffect(() => {
+      if (loginCheck) {
+        getAllUsers();
+      }
+    }, [loginCheck]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
