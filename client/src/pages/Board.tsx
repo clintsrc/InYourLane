@@ -17,6 +17,7 @@ const Board = () => {
   const [error, setError] = useState(false);
   const [loginCheck, setLoginCheck] = useState(false);
   const [selectedUser, setSelectedUser] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const checkLogin = () => {
     if (auth.loggedIn()) {
@@ -87,6 +88,26 @@ const Board = () => {
     }
   };
 
+  /* Sort the tickets by user
+     ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description */
+  const sortTicketsByUser = (ticketsToSort: TicketData[]): TicketData[] => {
+    return ticketsToSort.sort((a, b) => {
+      const userA = a.assignedUser?.username || "";
+      const userB = b.assignedUser?.username || "";
+      if (sortDirection === "asc") {
+        return userA.localeCompare(userB); // ascending
+      } else {
+        return userB.localeCompare(userA); // descending
+      }
+    });
+  };
+
+  // Update the state with the selected sort order ascending/descending
+  const handleSortOrderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSortDirection = e.target.value as "asc" | "desc";
+    setSortDirection(newSortDirection);
+  };
+
   useLayoutEffect(() => {
     checkLogin();
   }, []);
@@ -131,18 +152,31 @@ const Board = () => {
                 </option>
               ))}
             </select>
+            <label className="sort-label" htmlFor="sortOrder">
+              Sort Order:
+            </label>
+            <select
+              id="sortOrder"
+              value={sortDirection}
+              onChange={handleSortOrderChange}
+              // It doesn't make sense to change the sort order for a single selected user
+              disabled={selectedUser !== ""}
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
           </div>
-
           <div className="board-display">
             {boardStates.map((status) => {
               const filtered = filteredTickets.filter(
                 (ticket) => ticket.status === status
               );
+              const sortedTicketsForStatus = sortTicketsByUser(filtered);
               return (
                 <Swimlane
                   title={status}
                   key={status}
-                  tickets={filtered}
+                  tickets={sortedTicketsForStatus}
                   deleteTicket={deleteIndvTicket}
                 />
               );
