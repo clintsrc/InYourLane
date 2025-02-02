@@ -153,7 +153,7 @@ const Board = () => {
               ))}
             </select>
             <label className="sort-label" htmlFor="sortOrder">
-              Sort Order:
+              {/* empty label since 'ascending' and 'descending' are intuitive */}
             </label>
             <select
               id="sortOrder"
