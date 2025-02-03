@@ -28,6 +28,11 @@ const Navbar = () => {
     }
   };
 
+  const handleLogoutClick = ():void => {
+    auth.logout();
+    navigate("/login"); // redirect to the login page
+  }
+
   return (
     <div className="nav">
       <div className="nav-title">
@@ -44,7 +49,7 @@ const Navbar = () => {
           </li>
         ) : (
           <li className="nav-item">
-            <button type="button" onClick={() => auth.logout()}>
+            <button type="button" onClick={handleLogoutClick}>
               Logout
             </button>
           </li>
