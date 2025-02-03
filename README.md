@@ -50,23 +50,17 @@ If your changes include new features, please update the documentation accordingl
 If you are fixing a bug, please include a test to verify the fix.  
 Thank you for your contributions!
 
-![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)  
-![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)  
-![Font Awesome](https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white)  
-![Insomnia](https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&logoColor=white)  
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)  
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white) ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white) ![Font Awesome](https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white) ![Insomnia](https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&logoColor=white) ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)  
 
 ## Tests
 
 Test instructions:  
-1. Try using the reject and save buttons on the search page.  
-2. On the saved page ensure the list is updated from the search page additons.  
-3. Try the image and email links.  
-4. Try removing candidates until the list is empty.  
-5. Test the sort opton.  
-6. Try filtering on text in one of the bio fields.  
-7. Try filtering on a nonexisting text string.  
-8. Clear the filter to be sure the saved candidates are visible again.
+1. Click the Login button then enter an invalid username and password. Expect to see an error message indicating that the credentials are incorrect.
+1. Enter valid credentials using one of the test accounts in server/src/seeds/user-seeds.ts. Expect to be redirected to the main Kanban board page. Also you should find a JWT entry in your browser's localStorage when you use your browser's development tools in Application view.
+1. Close the site. Re-open the site in your browser. Expect to go directly to the main Kanban board page without having to login (within the 1 hour token's expiration time period).
+1. Click the Logout button. Expect to be redirected to the login page. Also the JWT should be removed from the browser's local storage.
+1. Try to visit the Kanban board page again without being authenticated. Expect to be redirected to the login page.
+1. Leave the session open, remaining inactive until the 1 hour JWT's expiration period has passed. expect that the session expires, the JWT is invalidated, and the browser is redirected to the login page upon your next action
 
 ## Questions
 

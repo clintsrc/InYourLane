@@ -112,6 +112,9 @@ class AuthService {
       console.error('Error removing access token from local storage:', error);
     }
 
+    /* Note that this method works in dev where Vite manages the environment, but 
+       it doesn't work on the production CDN. Instead the logout action uses  
+       React's useNavigate */
     // redirect to the login page
     //window.location.assign('/login');
   }
