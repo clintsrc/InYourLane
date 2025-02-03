@@ -17,15 +17,23 @@ A Kanban board application featuring secure server-side authentication using JWT
 
 ## Installation
 
-1. Change the project's root directory  
-2. Install the dependency modules: npm install
+1. Change the project's root directory
+1. Install the dependencies: npm install
+1. Create the PostgreSQL database
+   - Create a server/.env containing your admin credentials and a random JWT password (refer to the .env.EXAMPLE located there).
+   - Use psql to import the server/db/schema.sql (e.g. psql -U postgres -f db/schema.sql)
+1. Seed the database:
+   - npm run server:build
+   - npm run seed
 
 ## Usage
 
 1. Change the project's root directory  
-2. Run: npm run dev  
-3. Browse to the running app at: http://localhost:3000/  
-* See the active site deployed on Render [here](TBD)  
+1. Run: npm run start:dev  
+1. Browse to the running app at: http://localhost:3000/  
+1. Login using one of the test accounts (see server/src/seeds/user-seeds.ts)
+1. See the test section for use cases
+* See the active site deployed on Render [here](https://inyourlane.onrender.com)  
 Note that it takes a couple of minutes to spin up  
 ![screenshot](client/src/assets/images/screenshot.jpg)
 
@@ -41,6 +49,12 @@ Write clear and concise commit messages.
 If your changes include new features, please update the documentation accordingly.  
 If you are fixing a bug, please include a test to verify the fix.  
 Thank you for your contributions!
+
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)  
+![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)  
+![Font Awesome](https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white)  
+![Insomnia](https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&logoColor=white)  
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)  
 
 ## Tests
 

@@ -113,7 +113,7 @@ class AuthService {
     }
 
     // redirect to the login page
-    window.location.assign('/login');
+    //window.location.assign('/login');
   }
 }
 
