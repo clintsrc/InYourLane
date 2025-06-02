@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: InYourLane
+    env: node
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DB_URL
+        value: "postgresql://render_deploy_42b8_user:YOUR_PASSWORD@YOUR_HOST/YOUR_DATABASE"
+        sync: false
